@@ -1,0 +1,46 @@
+
+<MainScreen@BoxLayout>:
+    main_content : main_content
+    options_layout : options_layout
+    orientation : 'vertical'
+
+    canvas.before :
+        Color :
+            rgba : .5 , .1 , .75 , .7
+        Rectangle :
+            pos :self.pos
+            size : self.size
+
+    ScrollView:
+        id : main_content
+        put_data : put_data
+        do_scroll_x: False
+        do_scroll_y: True
+        BoxLayout :
+            id : put_data
+            orientation : 'vertical'
+    Control_Buttons :
+        id : options_layout
+        size_hint_y : 0.3
+
+#oti 8a uparxei sta plagia gia leitourgies
+<Control_Buttons@Spinner> :
+    #buttons
+    text : 'Control Buttons'
+    values : ["Add","Done","Delete","Quit"]
+
+<Task_Layout@BoxLayout>:
+    ena_request : None
+    size_hint_y : None
+    orientation : 'horizontal'
+    task_info : task_info
+    canvas.before :
+        Color :
+            rgba : .5 , .1 , .75 , .7
+        Rectangle :
+            pos :self.pos
+            size : self.size
+    Label :
+        id : task_info
+        size_hint_y : None
+        height : 50
