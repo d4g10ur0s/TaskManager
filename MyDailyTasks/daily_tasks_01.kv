@@ -30,7 +30,6 @@
     values : ["Add","Done","Delete","Quit"]
 
 <Task_Layout@BoxLayout>:
-    ena_request : None
     size_hint_y : None
     orientation : 'horizontal'
     task_info : task_info
@@ -44,3 +43,20 @@
         id : task_info
         size_hint_y : None
         height : 50
+
+<Create_Task_Layout@FloatLayout>:
+    size_hint_y : None
+    height : 500
+    task_info : task_name
+    canvas.before :
+        Color :
+            rgba : .5 , .7 , .75 , .7
+        Rectangle :
+            pos :self.pos
+            size : self.size
+    TextInput :
+        id : task_name
+        size_hint : (0.05 , 0.075)
+        multiline : False
+        font_size : 15
+        pos_hint : {"center_x": 0,"center_y": 0.75}

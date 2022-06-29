@@ -227,22 +227,28 @@ def save_task(path,tasks):
         path = tpath#arxikopoihsh
 
 def merge_old_tasks(path):
+    contents = []
     path += "Days\\"
-    path += (dt.datetime.now() - dt.timedelta(days=1)).strftime('%Y') + '\\' + (dt.datetime.now() - dt.timedelta(days=1)).strftime('%B') + '\\' + (dt.datetime.now() - dt.timedelta(days=1)).strftime('%d') + '\\PersonalTasks.json'
-    if os.path.exists(path):
-        opened_file = open(path,'r+')
-        tasks = create_tasks_from_json(opened_file.readlines())
-        opened_file.close()
-        os.remove(path)#diagrafw palio arxeio
-        #filter pending tasks
-        filt = []
-        for i in tasks :
-            if i.get_state() == 'Pending' :
-                i.set_when(i.get_when() +  dt.timedelta(days=1))
-                filt.append(i)
-        return filt
-    else :
-        return []
+    #check posous fakelous
+    for i in os.listdir(path):
+        #pernaw se mhnes
+        for j in os.listdir(path + str(i) + '\\'):
+            #pernaw se hmeres
+            for k in os.listdir(path + str(i) + '\\' + str(j) + '\\'):
+                print(str(k))
+                if k == dt.datetime.today().day :
+                    pass
+                else:
+                    if os.path.exists(path + str(i) + '\\' + str(j) + '\\' + k +'\\'):
+                        if os.path.exists(path + str(i) + '\\' + str(j) + '\\' + k +'\\PersonalTasks.json'):
+                            #pairnw content apo arxeio
+                            fl = open(path + str(i) + '\\' + str(j) + '\\' + k +'\\PersonalTasks.json', 'r+')
+                            contents += fl.readlines()
+                            fl.close()
+                            #diagrafw arxeio
+                            os.remove(path + str(i) + '\\' + str(j) + '\\' + k +'\\PersonalTasks.json')
+                        os.rmdir(path + str(i) + '\\' + str(j) + '\\' + str(k)+'\\')
+    return create_tasks_from_json(contents)
 
 def create_tasks_from_json(tasks):
     to_ret = []
@@ -295,6 +301,9 @@ def combined_functionality():
             save_task(get_date_path(f),tasks)#apo8hkeush ke eksodos
             exit()
 
+class Create_Task_Layout(BoxLayout):
+    pass
+
 class Task_Layout(BoxLayout):
     def __init__(self,task = Task() ,**var_args):
         super(Task_Layout, self).__init__(**var_args)
@@ -306,7 +315,9 @@ class MainScreen(BoxLayout):
 
     def __init__(self, **var_args):
         super(MainScreen, self).__init__(**var_args)
-        #main loop
+        #bindings
+        self.ids.options_layout.bind(text = self.operation)#dialogh operation
+        #main things
         path = get_date_path(f)
         self.tasks = merge_old_tasks(path)
         save_task(path,self.tasks)
@@ -319,11 +330,14 @@ class MainScreen(BoxLayout):
             #vazw keno
             pass
         self.put_tasks()
-        event = Clock.schedule_interval(self.go_upwards, 1.5)
         #event.cancel()
     def put_tasks(self):
-        for i in self.tasks:
-            self.main_content.put_data.add_widget(Task_Layout(i))
+        try :
+            for i in self.tasks:
+                self.main_content.put_data.add_widget(Task_Layout(i))
+            event = Clock.schedule_interval(self.go_upwards, 1.5)
+        except TypeError:
+            self.main_content.put_data.add_widget(Label(text = ' No Tasks '))
 
     def go_upwards(self,k):
         self.main_content.put_data.remove_widget(self.main_content.put_data.children[self.deikths])
@@ -333,6 +347,23 @@ class MainScreen(BoxLayout):
         else:
             self.deikths+=1
 
+    def operation(self,instance,pos,**kwargs):
+        if str(self.ids.options_layout.text) == 'Add' :
+            #dhmiourgia
+            self.ids.main_content.clear_widgets()
+            self.ids.main_content.add_widget(Create_Task_Layout())
+            self.ids.options_layout.text = 'Control Buttons'
+            pass
+        elif str(self.ids.options_layout.text) == 'Done' :
+            #oloklhrwsh
+            self.ids.options_layout.text = 'Control Buttons'
+            pass
+        elif str(self.ids.options_layout.text) == 'Delete':
+            #diagrafh
+            self.ids.options_layout.text = 'Control Buttons'
+            pass
+        elif str(self.ids.options_layout.text) == 'Quit':
+            exit()
 # the Base Class of our Kivy App
 class MyApp(App):
     def build(self):
